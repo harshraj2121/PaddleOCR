@@ -1,0 +1,38 @@
+Text: BANK ACCOUNT APPLICATION | Box: [128 ... 183] | Score: 0.90
+Text: FORM_001 | Box: [1335 ...  174] | Score: 1.00
+Text: APPLICATION DETAILS | Box: [136 ... 350] | Score: 0.98
+Text: Application No.: | Box: [135 ... 438] | Score: 0.96
+Text: APP-2025-0001 | Box: [497 ... 435] | Score: 1.00
+Text: Submission Date: 2025-02-04 | Box: [921 ... 436] | Score: 0.98
+Text: Divya Kapoor | Box: [495 ... 528] | Score: 0.99
+Text: Applicant Name: | Box: [136 ... 524] | Score: 0.99
+Text: Date of Birth: | Box: [920 ... 523] | Score: 0.96
+Text: 1988-04-03 | Box: [1284 ...  523] | Score: 1.00
+Text: Gender: | Box: [132 ... 609] | Score: 1.00
+Text: Male | Box: [495 ... 609] | Score: 1.00
+Text: Marital Status: | Box: [920 ... 609] | Score: 0.97
+Text: Married | Box: [1283 ...  610] | Score: 1.00
+Text: CONTACT INFORMATION | Box: [134 ... 738] | Score: 0.98
+Text: Address: | Box: [132 ... 823] | Score: 0.99
+Text: 51 Civil Lines | Box: [496 ... 823] | Score: 0.95
+Text: City: | Box: [127 ... 917] | Score: 0.97
+Text: Jaipur | Box: [487 ... 918] | Score: 0.99
+Text: State: | Box: [918 ... 911] | Score: 0.99
+Text: Rajasthan | Box: [1282 ...  913] | Score: 1.00
+Text: Postal Code: | Box: [133 ... 995] | Score: 0.97
+Text: 302001 | Box: [497 ... 995] | Score: 1.00
+Text: Phone: | Box: [ 916 ... 1001] | Score: 0.99
+Text: 9876543001 | Box: [1283 ...  998] | Score: 0.98
+Text: Email: | Box: [ 134 ... 1079] | Score: 0.99
+Text: divya.kapoorl@example.com | Box: [ 497 ... 1087] | Score: 0.98
+Text: SERVICE SELECTION | Box: [ 132 ... 1213] | Score: 0.98
+Text: √Standard | Box: [ 822 ... 1307] | Score: 0.91
+Text: Basic | Box: [ 564 ... 1301] | Score: 1.00
+Text: Selected Plan: | Box: [ 132 ... 1298] | Score: 0.97
+Text: Premium | Box: [1258 ... 1301] | Score: 1.00
+Text: Application Status: Under Review | Box: [ 133 ... 1402] | Score: 0.97
+Text: OFFICE NOTES | Box: [ 132 ... 1537] | Score: 0.97
+Text: Signature requires secondary review. | Box: [ 148 ... 1623] | Score: 0.97
+Text: Applicant Signature | Box: [ 152 ... 2111] | Score: 0.99
+Text: Authorized Officer | Box: [1029 ... 2110] | Score: 0.98
+Text: Synthetic training document — no real personal information. | Box: [ 122 ... 2402] | Score: 0.98
