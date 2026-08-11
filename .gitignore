@@ -1,5 +1,8 @@
 venv/
 venv
 .env
-/__pycache__/
+pythonfiles/__pycache__/
 pdfs/
+images/
+twopdf/
+faiss_chunks/
