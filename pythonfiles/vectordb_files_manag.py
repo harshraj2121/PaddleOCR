@@ -20,7 +20,6 @@ ALL_FILES = "pdfs"
 def run_all_files():
     chunks = []
     for file in glob.glob(os.path.join(ALL_FILES, "*")):
-        print(file)
         # 1. getting the text form ocr
         result = ocr_text_extraction(file)
 
@@ -32,8 +31,8 @@ def run_all_files():
         result = llm_call(ocr_text)
         result["ocr_text"] = ocr_text
 
-        chunks.append(Document(page_content = json.dumps(result), metadata={"source" : file}))
-        print(chunks)
+        chunks.append(Document(page_content = json.dumps(result["ocr_text"]), metadata={"source_file" : file, "form_id": result["form_id"], "form_type": result["form_type"], "applicant_name": result["applicant_name"], "application_number": result["application_number"], "submission_date": result["submission_date"] }))
+        print(len(chunks))
 
     return chunks
 
@@ -47,7 +46,7 @@ def creating_embeddings(chunks):
 
 
 final_chunks = run_all_files()
-print(len(final_chunks))
-creating_embeddings(final_chunks)
 
+creating_embeddings(final_chunks)
+print("done!")
 

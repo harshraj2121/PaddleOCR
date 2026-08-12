@@ -7,6 +7,21 @@ from langchain.messages import HumanMessage, SystemMessage
 load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 
+model = init_chat_model("groq:llama-3.1-8b-instant")
+query_checker_model = init_chat_model("groq:openai/gpt-oss-20b")
+
+def valid_query_checker(query: str):
+    messages = f"""Classify the following user message as either:
+            - "document_query": a question about any person, scanned forms, applicants, dates, fields, or content
+            - "other": greetings, small talk, unrelated, or too vague to answer
+
+            Message: "{query}"
+            Respond with only one word: document_query or other"""
+    response = query_checker_model.invoke(messages)
+    return response.content
+    
+
+
 systemPrompt = (
     "You are an expert doucment handler. "
     "Your task is to read the given text and extract specific fields. "
@@ -16,7 +31,6 @@ systemPrompt = (
     "Do not include explanations, comments, or any text outside of JSON."
     )
 
-model = init_chat_model("groq:llama-3.1-8b-instant")
 
 # function to get desired json from the ocr_text
 def llm_call(human_prompt: str) -> dict:

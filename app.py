@@ -5,73 +5,51 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.tools import tool
+from pythonfiles import search_form_database, valid_query_checker, re_ranker_function
+
 load_dotenv()
-
-
-query = "What contact number was provided by Yash Bansal"
-
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 
-
-
+#variables
+query = "address of yash bansal"
 DB_DIRECTORY = "faiss_chunks"
 system_message = (
     "you are a database manager. "
-    "your task is to use search_from_database tool to answer the every user query "
-    "you are strictly adviced to use the function only if you don't get the answer just say not found the query. "
-    "Do not answer this tool for general knowledge or unrelated questions. "
+    "you are strictly prohibited not to answer the queries other than database usage. "
+    "you have to strictly use search_from_database tool only to answer the every user query. "
+    "if you don't get the answer just say not found the query. "
 )
 
 
-@tool
-def search_form_database(query: str) -> str:
-    """
-    Search the form database for query about people or applicant_name,
-    forms, applications, documents, fields, and other information
-    stored in the form database.
-
-    Use this tool when the user's question requires information
-    from the form database.
-
-    Do not use this tool for general knowledge or unrelated questions.
-    """
+valid_query = valid_query_checker(query)
+if valid_query == "document_query":
+    #tool variables
+    model = init_chat_model("groq:llama-3.3-70b-versatile", temperature = 0)
+    tools = [search_form_database]
+    model_with_tools = model.bind_tools(tools)
 
 
-    normalized_query = query.strip().lower()
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-    vectorestore = FAISS.load_local(DB_DIRECTORY, embeddings, allow_dangerous_deserialization=True)
-    docs = vectorestore.as_retriever(search_type="similarity", search_kwargs = {"score_threshold": 0.8, "k": 4}).invoke(query)
-    if not docs:
-        return "No matching records found in the database"
-    return "\n\n---\n\n".join(doc.page_content for doc in docs)
+
+    prompt = [SystemMessage(system_message), HumanMessage(query), ]
+    tool_call_message = model_with_tools.invoke(prompt)
+    print(tool_call_message.tool_calls)
+
+    for tool_call in tool_call_message.tool_calls:
+        selected_tools = {
+            "search_form_database": search_form_database, 
+        }[tool_call["name"].lower()]
+        tool_message = selected_tools.invoke(tool_call)
+        tool_content = tool_message.content
 
 
-model = init_chat_model("google_genai:gemini-3.5-flash", temperature = 0)
-tools = [search_form_database]
-model_with_tools = model.bind_tools(tools)
-
-
-prompt = [SystemMessage(system_message), HumanMessage(query), ]
-tool_call_message = model_with_tools.invoke(prompt)
-print(tool_call_message.tool_calls)
-
-for tool_call in tool_call_message.tool_calls:
-    selected_tools = {
-        "search_form_database": search_form_database, 
-    }[tool_call["name"].lower()]
-    tool_message = selected_tools.invoke(tool_call)
-    print(tool_message)
+    re_ranked_result = re_ranker_function(content= tool_content, query = query)
+    
 
 
 
 
 
-
-
-
-
-
-
-
+else:
+    print("Enter a valid query")
