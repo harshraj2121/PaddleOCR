@@ -8,7 +8,7 @@ def re_ranker_function(content: list, query):
     ranked_scores = list(zip(content, scores))
     ranked_scores = sorted(ranked_scores, key=lambda x:x[1], reverse=True)
 
-    return ranked_scores[:3]
+    return ranked_scores[:4]
 
 
 if __name__ == "__main__":

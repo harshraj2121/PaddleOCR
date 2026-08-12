@@ -47,6 +47,32 @@ def llm_call(human_prompt: str) -> dict:
         return {'form_id': '', 'form_type': '', 'application_number': '', 'applicant_name': '', 'submission_date': ''}
 
 
+
+def llm_user_op(user_query, reranker_op):
+    systemPrompt = (
+        "You are an excelent AI information extractor. "
+        "Your are given the user Query and some information form the database. "
+        "You have to give response to the user Query strictly form the information provided. "
+        "you are srtictly restricted not response anything other than the provided information. "
+        "you have to give short and clear response"
+    )
+
+    humanPrompt = (
+        f"""Query: {user_query}
+            content: {reranker_op}
+        """
+    )
+
+    prompt = [SystemMessage(systemPrompt), HumanMessage(humanPrompt)]
+
+    try:
+        response = model.invoke(prompt)
+        return response.content
+
+    except:
+        return "Something went wrong"
+
+
 if __name__ == "__main__":
 
     sample_text = """

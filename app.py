@@ -2,10 +2,7 @@ import os
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain_core.tools import tool
-from pythonfiles import search_form_database, valid_query_checker, re_ranker_function
+from pythonfiles import search_form_database, valid_query_checker, re_ranker_function, llm_user_op
 
 load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
@@ -13,7 +10,7 @@ os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 
 #variables
-query = "address of yash bansal"
+query = input("\nEnter query: ")
 DB_DIRECTORY = "faiss_chunks"
 system_message = (
     "you are a database manager. "
@@ -34,7 +31,7 @@ if valid_query == "document_query":
 
     prompt = [SystemMessage(system_message), HumanMessage(query), ]
     tool_call_message = model_with_tools.invoke(prompt)
-    print(tool_call_message.tool_calls)
+    # print(tool_call_message.tool_calls)
 
     for tool_call in tool_call_message.tool_calls:
         selected_tools = {
@@ -43,13 +40,16 @@ if valid_query == "document_query":
         tool_message = selected_tools.invoke(tool_call)
         tool_content = tool_message.content
 
+    print("Hold on! we are gathering the information")
+
 
     re_ranked_result = re_ranker_function(content= tool_content, query = query)
-    
 
+    final_result = llm_user_op(user_query = query, reranker_op=re_ranked_result)
 
-
+    print(final_result)
 
 
 else:
     print("Enter a valid query")
+
