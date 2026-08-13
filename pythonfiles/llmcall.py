@@ -54,7 +54,7 @@ def llm_user_op(user_query, reranker_op):
         "Your are given the user Query and some information form the database. "
         "You have to give response to the user Query strictly form the information provided. "
         "you are srtictly restricted not response anything other than the provided information. "
-        "you have to give short and clear response"
+        "you have to give short and clear response in a single parageaph format"
     )
 
     humanPrompt = (
