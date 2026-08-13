@@ -5,5 +5,4 @@ pythonfiles/__pycache__/
 pdfs/
 images/
 twopdf/
-faiss_chunks/
 __pycache__

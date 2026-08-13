@@ -5,3 +5,4 @@ langchain-community
 python-dotenv
 langchain-groq
 langchain-google-genai
+"fastapi[standard]"
