@@ -1,8 +1,8 @@
 import glob
 import os
 import json
-from llmcall import llm_call
-from ocrstructure import ocr_text_extraction, group_and_pair
+from backend.pythonfiles.llmcall import llm_call
+from backend.pythonfiles.ocrstructure import ocr_text_extraction, group_and_pair
 from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
