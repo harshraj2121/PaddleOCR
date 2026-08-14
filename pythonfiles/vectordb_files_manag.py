@@ -1,8 +1,6 @@
 import glob
-from schemas import Savetodatabase
 import os
 import json
-from database import get_db
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from llmcall import llm_call
@@ -50,8 +48,7 @@ def creating_embeddings(chunks):
 
 
 
-# final_chunks, _ = run_all_files()
-def saving_sql(items: Savetodatabase, db: Session = Depends(get_db)):
+final_chunks, _ = run_all_files()
 
 
 
