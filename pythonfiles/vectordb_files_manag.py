@@ -1,8 +1,12 @@
 import glob
+from schemas import Savetodatabase
 import os
 import json
-from backend.pythonfiles.llmcall import llm_call
-from backend.pythonfiles.ocrstructure import ocr_text_extraction, group_and_pair
+from database import get_db
+from fastapi import Depends
+from sqlalchemy.orm import Session
+from llmcall import llm_call
+from ocrstructure import ocr_text_extraction, group_and_pair
 from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -13,12 +17,12 @@ os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 
 DB_DIRECTORY = "faiss_chunks"
-ALL_FILES = "pdfs"
-
+ALL_FILES = "twopdf"
 
 
 def run_all_files():
     chunks = []
+    all_results = []
     for file in glob.glob(os.path.join(ALL_FILES, "*")):
         # 1. getting the text form ocr
         result = ocr_text_extraction(file)
@@ -31,10 +35,11 @@ def run_all_files():
         result = llm_call(ocr_text)
         result["ocr_text"] = ocr_text
 
+        all_results.append(result)
         chunks.append(Document(page_content = json.dumps(result["ocr_text"]), metadata={"source_file" : file, "form_id": result["form_id"], "form_type": result["form_type"], "applicant_name": result["applicant_name"], "application_number": result["application_number"], "submission_date": result["submission_date"] }))
         print(len(chunks))
 
-    return chunks
+    return chunks, all_results
 
 #creating embeddings
 def creating_embeddings(chunks):
@@ -45,8 +50,11 @@ def creating_embeddings(chunks):
 
 
 
-final_chunks = run_all_files()
+# final_chunks, _ = run_all_files()
+def saving_sql(items: Savetodatabase, db: Session = Depends(get_db)):
 
-creating_embeddings(final_chunks)
+
+
+# creating_embeddings(final_chunks)
 print("done!")
 

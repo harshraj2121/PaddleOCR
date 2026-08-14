@@ -10,6 +10,8 @@ os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 model = init_chat_model("groq:llama-3.1-8b-instant")
 query_checker_model = init_chat_model("groq:openai/gpt-oss-20b")
 
+
+
 def valid_query_checker(query: str):
     messages = f"""Classify the following user message as either:
             - "document_query": a question about any person, scanned forms, applicants, dates, fields, or content
@@ -26,10 +28,11 @@ systemPrompt = (
     "You are an expert doucment handler. "
     "Your task is to read the given text and extract specific fields. "
     "You must return the output strictly in JSON format with no extra text. "
-    "The JSON must contain the following keys: form_id, form_type, application_number, applicant_name, submission_date. "
+    "The JSON must contain the following keys: form_id, form_type, application_number, applicant_name, submission_date, complete_address, gender, contact_number, email, city. "
     "If a value is missing, set it to null. "
     "Do not include explanations, comments, or any text outside of JSON."
     )
+
 
 
 # function to get desired json from the ocr_text
@@ -44,7 +47,19 @@ def llm_call(human_prompt: str) -> dict:
         return json_content
 
     except:
-        return {'form_id': '', 'form_type': '', 'application_number': '', 'applicant_name': '', 'submission_date': ''}
+        return {
+            "form_id": None,
+            "form_type": None,
+            "application_number": None,
+            "applicant_name": None,
+            "submission_date": None,
+            "complete_address": None,
+            "gender": None,
+            "contact_number": None,
+            "email": None,
+            "city": None,
+        }
+
 
 
 
@@ -71,6 +86,9 @@ def llm_user_op(user_query, reranker_op):
 
     except:
         return "Something went wrong"
+
+
+
 
 
 if __name__ == "__main__":
