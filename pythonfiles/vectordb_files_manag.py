@@ -15,7 +15,7 @@ os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 
 DB_DIRECTORY = "faiss_chunks"
-ALL_FILES = "twopdf"
+ALL_FILES = "pdfs"
 
 
 
@@ -79,10 +79,4 @@ def creating_embeddings(chunks):
 
 if __name__ == "__main__":
     final_chunks, all_results = run_all_files()
-    print(final_chunks)
-    print(f"allresulsts", all_results)
-
-
-    # creating_embeddings(final_chunks)
-    print("done!")
-
+    creating_embeddings(final_chunks)

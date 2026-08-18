@@ -1,20 +1,19 @@
 from paddleocr import PaddleOCR
 
+ocr = PaddleOCR(
+return_word_box=True,
+text_detection_model_name="PP-OCRv5_mobile_det",
+text_recognition_model_name="PP-OCRv5_mobile_rec",
+use_doc_orientation_classify=False,
+use_doc_unwarping=False,
+use_textline_orientation=False,
+text_det_limit_side_len=960,
+enable_mkldnn=False,
+cpu_threads=4,
+)
+
+
 def ocr_text_extraction(file_path):
-
-    ocr = PaddleOCR(
-    return_word_box=True,
-    text_detection_model_name="PP-OCRv5_mobile_det",
-    text_recognition_model_name="PP-OCRv5_mobile_rec",
-    use_doc_orientation_classify=False,
-    use_doc_unwarping=False,
-    use_textline_orientation=False,
-    text_det_limit_side_len=960,
-    enable_mkldnn=False,
-    cpu_threads=4,
-    )
-
-
     return ocr.predict(file_path)
 
 
