@@ -2,15 +2,19 @@ import os
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, SystemMessage
-from pythonfiles import search_form_database, valid_query_checker, re_ranker_function, llm_user_op
-from fastapi import FastAPI
+from pythonfiles import search_form_database, valid_query_checker, re_ranker_function, llm_user_op, run_all_files
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
-from schemas import UserQuery
+from db_and_sql import create_form, get_db, FormCreate, engine, Base
+from db_and_sql import FormCreate
 
 
 load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 app.add_middleware(
@@ -37,7 +41,7 @@ def test_server():
 
 
 @app.get("/userquery")
-def userquery(query: UserQuery):
+def userquery(query):
     query = query.user_query
 
     valid_query = valid_query_checker(query)
@@ -73,3 +77,20 @@ def userquery(query: UserQuery):
     else:
         print("Enter a valid query")
 
+
+
+# form_data: FormCreate, isse function me parameter me dena hai
+@app.post("/add_form")
+def add_form( db: Session = Depends(get_db)):
+    _, all_results = run_all_files()
+
+    results = []
+    print(all_results)
+    for item in all_results:
+        form_data = FormCreate(**item)
+        result = create_form(db, form_data)
+        results.append(result)
+
+    if results:
+        return "done"
+    return "Something went wrong!"

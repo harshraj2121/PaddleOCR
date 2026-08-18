@@ -3,8 +3,8 @@ import os
 import json
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from llmcall import llm_call
-from ocrstructure import ocr_text_extraction, group_and_pair
+from .llmcall import llm_call
+from .ocrstructure import ocr_text_extraction, group_and_pair
 from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -18,7 +18,10 @@ DB_DIRECTORY = "faiss_chunks"
 ALL_FILES = "twopdf"
 
 
+
+#agar all results ka koi use nahi hua to usse hata hi dena
 def run_all_files():
+    print("running this!")
     chunks = []
     all_results = []
     for file in glob.glob(os.path.join(ALL_FILES, "*")):
@@ -31,10 +34,36 @@ def run_all_files():
             ocr_text = "\n".join(lines)
 
         result = llm_call(ocr_text)
-        result["ocr_text"] = ocr_text
 
+        result["ocr_text"] = ocr_text
+        result["source_file"] = file
+
+        page_content = (
+            f"applicant_name : {result['applicant_name']}\n"
+            f"application_number: {result['application_number']}\n"
+            f"form_id: {result['form_id']}\n"
+            f"form_type: {result['form_type']}\n"
+            f"ocr_text: {result['ocr_text']}\n"
+        )
+
+
+        metadata = {
+            "source_file" : result["source_file"],
+            "form_id": result["form_id"],
+            "form_type": result["form_type"],
+            "applicant_name": result["applicant_name"],
+            "application_number": result["application_number"],
+            "submission_date": result["submission_date"],
+            "gender": result["gender"],
+            "contact_number": result["contact_number"],
+            "email": result["email"],
+            "complete_address": result["complete_address"],
+            "martial_status": result["martial_status"],
+        }
+
+        chunks.append(Document(page_content = page_content, metadata = metadata))
         all_results.append(result)
-        chunks.append(Document(page_content = json.dumps(result["ocr_text"]), metadata={"source_file" : file, "form_id": result["form_id"], "form_type": result["form_type"], "applicant_name": result["applicant_name"], "application_number": result["application_number"], "submission_date": result["submission_date"] }))
+
         print(len(chunks))
 
     return chunks, all_results
@@ -48,10 +77,12 @@ def creating_embeddings(chunks):
 
 
 
-final_chunks, _ = run_all_files()
+if __name__ == "__main__":
+    final_chunks, all_results = run_all_files()
+    print(final_chunks)
+    print(f"allresulsts", all_results)
 
 
-
-# creating_embeddings(final_chunks)
-print("done!")
+    # creating_embeddings(final_chunks)
+    print("done!")
 

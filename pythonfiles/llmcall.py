@@ -7,7 +7,7 @@ from langchain.messages import HumanMessage, SystemMessage
 load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 
-model = init_chat_model("groq:llama-3.1-8b-instant")
+model = init_chat_model("groq:openai/gpt-oss-120b")
 query_checker_model = init_chat_model("groq:openai/gpt-oss-20b")
 
 
@@ -28,7 +28,7 @@ systemPrompt = (
     "You are an expert doucment handler. "
     "Your task is to read the given text and extract specific fields. "
     "You must return the output strictly in JSON format with no extra text. "
-    "The JSON must contain the following keys: form_id, form_type, application_number, applicant_name, submission_date, complete_address, gender, contact_number, email, city. "
+    "The JSON must contain the following keys: form_id, form_type, application_number, applicant_name, submission_date, complete_address, martial_status, contact_number, email, city, gender. "
     "If a value is missing, set it to null. "
     "Do not include explanations, comments, or any text outside of JSON."
     )
@@ -114,4 +114,4 @@ if __name__ == "__main__":
     Synthetic training document — no real personal information.
     """
 
-    llm_call(sample_text)
+    print(llm_call(sample_text))
