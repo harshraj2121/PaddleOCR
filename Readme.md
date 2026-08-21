@@ -138,8 +138,8 @@ formquery-ai/
 ### Installation
 
 ```bash
-git clone <repository-url>
-cd formquery-ai
+git clone https://github.com/harshraj2121/PaddleOCR.git
+cd PaddleOCR
 pip install -r requirements.txt
 ```
 
