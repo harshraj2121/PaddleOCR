@@ -7,4 +7,3 @@ images/
 twopdf/
 __pycache__
 db_and_sql/__pycache__
-output.json

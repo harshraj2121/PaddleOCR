@@ -15,7 +15,7 @@ os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 
 DB_DIRECTORY = "faiss_chunks"
-ALL_FILES = "pdfs"
+ALL_FILES = "twopdf"
 
 
 

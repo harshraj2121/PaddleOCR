@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class FormCreate(BaseModel):
@@ -15,3 +15,10 @@ class FormCreate(BaseModel):
     submission_date : str | None
     martial_status : str | None
     source_file: str | None
+
+
+
+class DatabaseQuery(BaseModel):
+    query: str = Field(
+        description="The user's question that should be answered using the SQL database."
+    )
