@@ -22,3 +22,6 @@ class DatabaseQuery(BaseModel):
     query: str = Field(
         description="The user's question that should be answered using the SQL database."
     )
+
+class UserQuery(BaseModel):
+    user_query: str

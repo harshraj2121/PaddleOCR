@@ -149,8 +149,8 @@ pip install -r requirements.txt
 # Start the FastAPI backend
 uvicorn src.api.main:app --reload
 
-# Start the Streamlit frontend
-streamlit run app/streamlit_app.py
+# Start the React.js frontend
+React npm run dev
 ```
 
 ## Evaluation
