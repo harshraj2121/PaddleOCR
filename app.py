@@ -2,8 +2,8 @@ import os
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, SystemMessage
-from pythonfiles import search_form_database, valid_query_checker, re_ranker_function, llm_user_op, run_all_files, creating_embeddings, search_from_sql
-from fastapi import FastAPI, Depends
+from pythonfiles import search_form_database, valid_query_checker, re_ranker_function, llm_user_op, run_all_files, creating_embeddings, search_from_sql, check_if_exists_in_VDB
+from fastapi import FastAPI, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from db_and_sql import create_form, get_db, FormCreate, engine, Base, UserQuery
@@ -86,12 +86,14 @@ def userquery(query: UserQuery):
 
 
     else:
-        return "Please a valid query"
+        return {"reply": "Please enter a valid query"}
 
 # form_data: FormCreate, isse function me parameter me dena hai
 @app.post("/add_form")
 def add_form(db: Session = Depends(get_db)):
-    final_chunks, all_results = run_all_files()
+    ALL_FILES = "twopdf"
+
+    final_chunks, all_results = run_all_files(ALL_FILES)
     creating_embeddings(final_chunks)
     results = []
 
@@ -105,6 +107,31 @@ def add_form(db: Session = Depends(get_db)):
         return "done"
     return "Something went wrong!"
 
+
+
+# to jan new file upload hogi to pahle database me search hogi ki file exists karti hai ya nahi agar nahi karti hai to pahle uske chunks banenge then embeddings banegi then vector database me store hogi then sql database me
+@app.post("/uploadfile")
+def regex_str(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    if check_if_exists_in_VDB(file.filename):
+        return {"message": "file already exists"}
+
+    try:
+        chunks, all_results = run_all_files(file)
+    except:
+        return {"response": "Something went wrong.."}
+
+
+    creating_embeddings(chunks)
+    results = []
+    for item in all_results:                                           #for item in all_results
+        form_data = FormCreate(**item)
+        result = create_form(db, form_data)
+        results.append(result)
+
+    if results:
+        return "done"
+    return "Something went wrong!"
+    
 
 if __name__ == "__main__":
     output = userquery("how many male candidates are there")

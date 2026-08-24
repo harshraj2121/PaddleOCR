@@ -1,12 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
-// Point this at your own backend/chat endpoint.
-// Expected request:  { message: string }
-// Expected response: { reply: string }
-const API_URL = "http://127.0.0.1:8000";
-
 export default function Chatbot() {
+  const backend_url = import.meta.env.VITE_API_URL;
   const [messages, setMessages] = useState([
     { id: 1, sender: "bot", text: "Hey! How can I help you today?" },
   ]);
@@ -29,8 +25,7 @@ export default function Chatbot() {
     setIsLoading(true);
 
     try {
-      const data = await axios.post(API_URL + "/userquery", { user_query: trimmed });
-      console.log(data.data.reply)
+      const data = await axios.post(backend_url + "/userquery", { user_query: trimmed });
       const botMessage = {
         id: Date.now() + 1,
         sender: "bot",
@@ -54,15 +49,15 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-slate-100 p-4">
-      <div className="flex h-150 w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
+    <div className="flex h-screen w-full items-center justify-center bg-gray-900 p-4">
+      <div className="flex h-150 w-full max-w-md flex-col overflow-hidden rounded-2xl bg-gray-800 shadow-xl">
         {/* Header */}
-        <div className="bg-slate-800 px-4 py-3">
+        <div className="bg-gray-700 px-4 py-3">
           <h1 className="text-lg font-semibold text-white">Chatbot</h1>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-4">
+        <div className="flex-1 space-y-3 overflow-y-auto bg-gray-800 p-4">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -73,8 +68,8 @@ export default function Chatbot() {
               <div
                 className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm leading-relaxed ${
                   msg.sender === "user"
-                    ? "rounded-br-sm bg-slate-800 text-white"
-                    : "rounded-bl-sm bg-white text-slate-800 shadow"
+                    ? "rounded-br-sm bg-blue-600 text-white"
+                    : "rounded-bl-sm bg-gray-700 text-gray-200 shadow"
                 }`}
               >
                 {msg.text}
@@ -83,7 +78,7 @@ export default function Chatbot() {
           ))}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-white px-4 py-2 text-sm text-slate-400 shadow">
+              <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-gray-700 px-4 py-2 text-sm text-gray-400 shadow">
                 Typing...
               </div>
             </div>
@@ -92,7 +87,7 @@ export default function Chatbot() {
         </div>
 
         {/* Input */}
-        <div className="flex items-center gap-2 border-t border-slate-200 bg-white p-3">
+        <div className="flex items-center gap-2 border-t border-gray-700 bg-gray-800 p-3">
           <input
             type="text"
             value={input}
@@ -100,12 +95,12 @@ export default function Chatbot() {
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             disabled={isLoading}
-            className="flex-1 rounded-full border border-slate-300 px-4 py-2 text-sm outline-none focus:border-slate-500 disabled:opacity-60"
+            className="flex-1 rounded-full border border-gray-600 bg-gray-900 px-4 py-2 text-sm text-gray-200 outline-none focus:border-blue-500 disabled:opacity-60"
           />
           <button
             onClick={sendMessage}
             disabled={isLoading}
-            className="rounded-full bg-slate-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:opacity-60"
+            className="rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500 disabled:opacity-60"
           >
             Send
           </button>

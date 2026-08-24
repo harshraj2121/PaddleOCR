@@ -1,5 +1,6 @@
 import glob
 import os
+import sys
 import json
 from fastapi import Depends
 from sqlalchemy.orm import Session
@@ -20,11 +21,11 @@ ALL_FILES = "twopdf"
 
 
 #agar all results ka koi use nahi hua to usse hata hi dena
-def run_all_files():
+def run_all_files(allfiles):
     print("running this!")
     chunks = []
     all_results = []
-    for file in glob.glob(os.path.join(ALL_FILES, "*")):
+    for file in glob.glob(os.path.join(allfiles, "*")):
         # 1. getting the text form ocr
         result = ocr_text_extraction(file)
 
@@ -63,10 +64,12 @@ def run_all_files():
 
         chunks.append(Document(page_content = page_content, metadata = metadata))
         all_results.append(result)
+        print(chunks[0])
 
         print(len(chunks))
 
     return chunks, all_results
+
 
 #creating embeddings
 def creating_embeddings(chunks):
@@ -76,7 +79,12 @@ def creating_embeddings(chunks):
     print(f"index saved to {DB_DIRECTORY}")
 
 
+def check_if_exists_in_VDB(file):
+    embedding_model  = GoogleGenerativeAIEmbeddings(model="models/gemini-embeddings-001")
+    vectorstore = FAISS.load_local(DB_DIRECTORY, embedding_model, allow_dangerous_deserialization=True)
 
-if __name__ == "__main__":
-    final_chunks, all_results = run_all_files()
-    creating_embeddings(final_chunks)
+    for doc in vectorstore.docstore._dict.values():
+        if doc.metadata.get("source_file") == os.path.join("pdfs", file):
+            return True
+
+    return False
