@@ -9,6 +9,7 @@ export default function Upload() {
   const handleFile = (selectedFile) => {
     if (selectedFile) {
       setFile(selectedFile);
+      console.log(file)
     }
   };
 

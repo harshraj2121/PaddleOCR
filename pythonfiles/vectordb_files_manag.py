@@ -36,8 +36,10 @@ def run_all_files(allfiles):
 
         result = llm_call(ocr_text)
 
+
         result["ocr_text"] = ocr_text
-        result["source_file"] = file
+        base_path = os.path.basename(file)
+        result["source_file"] = os.path.join("pdfs", base_path)
 
         page_content = (
             f"applicant_name : {result['applicant_name']}\n"
@@ -64,7 +66,6 @@ def run_all_files(allfiles):
 
         chunks.append(Document(page_content = page_content, metadata = metadata))
         all_results.append(result)
-        print(chunks[0])
 
         print(len(chunks))
 
@@ -79,10 +80,30 @@ def creating_embeddings(chunks):
     print(f"index saved to {DB_DIRECTORY}")
 
 
+def add_embedidngs(new_chunks):
+    embedding_model = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+
+    if os.path.exists(os.path.join(DB_DIRECTORY, "index.faiss")):
+        vectorstore = FAISS.load_local(
+            DB_DIRECTORY, embedding_model, allow_dangerous_deserialization=True
+        )
+        vectorstore.add_documents(new_chunks)
+        print(f"appended {len(new_chunks)} new_chunks to existing index")
+    else:
+        vectorstore = FAISS.from_documents(new_chunks, embedding_model)
+        print(f"created new index with {len(new_chunks)} chunks")
+
+    vectorstore.save_local(DB_DIRECTORY)
+    print(f"index saved to {DB_DIRECTORY}")
+
+
 def check_if_exists_in_VDB(file):
+    if not os.path.exists(os.path.join(DB_DIRECTORY, "index.faiss")):
+        return False
+    
     embedding_model  = GoogleGenerativeAIEmbeddings(model="models/gemini-embeddings-001")
     vectorstore = FAISS.load_local(DB_DIRECTORY, embedding_model, allow_dangerous_deserialization=True)
-
+    print("filepath",os.path.join("pdfs", file))
     for doc in vectorstore.docstore._dict.values():
         if doc.metadata.get("source_file") == os.path.join("pdfs", file):
             return True

@@ -1,8 +1,10 @@
 import os
+import shutil
+import tempfile
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, SystemMessage
-from pythonfiles import search_form_database, valid_query_checker, re_ranker_function, llm_user_op, run_all_files, creating_embeddings, search_from_sql, check_if_exists_in_VDB
+from pythonfiles import search_form_database, valid_query_checker, re_ranker_function, llm_user_op, run_all_files, creating_embeddings, add_embedidngs, search_from_sql, check_if_exists_in_VDB
 from fastapi import FastAPI, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
@@ -70,7 +72,7 @@ def userquery(query: UserQuery):
 
             re_ranked_result = re_ranker_function(content= tool_content, query = query)
 
-            final_result = llm_user_op(user_query = query, reranker_op=re_ranked_result)
+            final_result = llm_user_op(user_query = query, reranker_op = re_ranked_result)
             return {"reply": final_result}
 
         if tool_call["name"] == "search_from_sql":
@@ -91,7 +93,7 @@ def userquery(query: UserQuery):
 # form_data: FormCreate, isse function me parameter me dena hai
 @app.post("/add_form")
 def add_form(db: Session = Depends(get_db)):
-    ALL_FILES = "twopdf"
+    ALL_FILES = "pdfs"
 
     final_chunks, all_results = run_all_files(ALL_FILES)
     creating_embeddings(final_chunks)
@@ -114,23 +116,35 @@ def add_form(db: Session = Depends(get_db)):
 def regex_str(file: UploadFile = File(...), db: Session = Depends(get_db)):
     if check_if_exists_in_VDB(file.filename):
         return {"message": "file already exists"}
+    
+    try:
+        upload_dir = tempfile.mkdtemp()
+        file_path = os.path.join(upload_dir, file.filename)
+
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        chunks, all_results = run_all_files(upload_dir)
+        print("chunks", chunks)
+        print("allresults", all_results)
+
+        shutil.rmtree(upload_dir)
+    except:
+        return {"message": "Something went wrong.."}
+
 
     try:
-        chunks, all_results = run_all_files(file)
+        add_embedidngs(chunks)
+        results = []
+        for item in all_results:                                           #for item in all_results
+            form_data = FormCreate(**item)
+            result = create_form(db, form_data)
+            results.append(result)
+    
+        return {"message": "data successfully added.."}
     except:
-        return {"response": "Something went wrong.."}
+        return {"message": "something broke"}
 
-
-    creating_embeddings(chunks)
-    results = []
-    for item in all_results:                                           #for item in all_results
-        form_data = FormCreate(**item)
-        result = create_form(db, form_data)
-        results.append(result)
-
-    if results:
-        return "done"
-    return "Something went wrong!"
     
 
 if __name__ == "__main__":
