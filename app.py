@@ -39,7 +39,7 @@ system_message = (
     "Choose the tool based on the operation required, not keywords. "
     "Normally use only one tool per query. "
     
-    "If the answer is not found, say: 'Not found in the database.'"
+    "If the answer is not found, say: 'Not found in the database. "
 )
 
 
