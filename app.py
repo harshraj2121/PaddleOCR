@@ -4,11 +4,11 @@ import tempfile
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, SystemMessage
-from backend.pythonfiles import search_form_database, valid_query_checker, re_ranker_function, llm_user_op, run_all_files, creating_embeddings, add_embedidngs, search_from_sql, check_if_exists_in_VDB
+from pythonfiles import search_form_database, valid_query_checker, re_ranker_function, llm_user_op, run_all_files, creating_embeddings, add_embedidngs, search_from_sql, check_if_exists_in_VDB
 from fastapi import FastAPI, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
-from backend.db_and_sql import create_form, get_db, FormCreate, engine, Base, UserQuery
+from db_and_sql import create_form, get_db, FormCreate, engine, Base, UserQuery
 
 load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")

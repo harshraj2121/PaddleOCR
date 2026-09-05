@@ -4,7 +4,7 @@ from langchain_core.tools import tool
 from langchain_community.utilities import SQLDatabase
 from langchain.chat_models import init_chat_model
 from sqlalchemy import text
-from backend.db_and_sql.database import get_db
+from db_and_sql.database import get_db
 
 
 
