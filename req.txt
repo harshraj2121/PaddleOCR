@@ -6,3 +6,4 @@ python-dotenv
 langchain-groq
 langchain-google-genai
 "fastapi[standard]"
+psycopg2-binary
