@@ -36,12 +36,18 @@ export default function Upload() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center gap-4 px-4 relative overflow-hidden">
       
       {/* Background decoration */}
       <div className="absolute -top-37.5 -left-37.5 w-100 h-100 bg-blue-600/20 rounded-full blur-3xl" />
       <div className="absolute -bottom-37.5 -right-37.5 w-100 h-100 bg-purple-600/20 rounded-full blur-3xl" />
-
+      
+      {/* navigation bar */}
+      <nav className="w-full max-w-md h-10 flex items-center justify-center gap-3">
+        <a href="/chat" className="bg-linear-45 from-violet-900 to-blue-500 px-10 py-2 rounded-full text-white font-semibold cursor-pointer">Chat</a>
+        <a href="/upload" className="bg-linear-45 from-violet-900 to-blue-500 px-10 py-2 rounded-full text-white font-semibold cursor-pointer">Upload</a>
+      </nav>
+      
       {/* Main Card */}
       <div className="relative w-full max-w-xl">
         <div className="bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">

@@ -49,16 +49,24 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-gray-900 p-4">
-      <div className="flex h-150 w-full max-w-md flex-col overflow-hidden rounded-2xl bg-gray-800 shadow-xl">
-        {/* Header */}
+    <div className="min-h-screen flex flex-col gap-4 w-full items-center justify-center bg-slate-950 p-4 relative overflow-hidden">
+
+      {/* Background decoration */}
+      <div className="absolute -top-37.5 -left-37.5 w-100 h-100 bg-blue-600/20 rounded-full blur-3xl" />
+      {/* <div className="absolute -bottom-37.5 -right-37.5 w-100 h-100 bg-purple-600/20 rounded-full blur-3xl" /> */}
+
+      <nav className="w-full max-w-md h-10 flex items-center justify-center gap-3">
+        <a href="/chat" className="bg-linear-45 from-violet-900 to-blue-500 px-10 py-2 rounded-full text-white font-semibold cursor-pointer">Chat</a>
+        <a href="/upload" className="bg-linear-45 from-violet-900 to-blue-500 px-10 py-2 rounded-full text-white font-semibold cursor-pointer">Upload</a>
+      </nav>
+
+      <div className="flex h-145 w-full max-w-xl flex-col overflow-hidden rounded-2xl bg-gray-800 shadow-xl">
         <div className="bg-gray-700 px-4 py-3">
           <h1 className="text-lg font-semibold text-white">Chatbot</h1>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 space-y-3 overflow-y-auto bg-gray-800 p-4">
-          {messages.map((msg) => (
+       <div className="flex-1 space-y-3 overflow-y-auto bg-gray-800 p-4">
+            {messages.map((msg) => (
             <div
               key={msg.id}
               className={`flex ${
@@ -86,7 +94,6 @@ export default function Chatbot() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Input */}
         <div className="flex items-center gap-2 border-t border-gray-700 bg-gray-800 p-3">
           <input
             type="text"
