@@ -1,14 +1,54 @@
-from sentence_transformers import CrossEncoder
+#from sentence_transformers import CrossEncoder
 
-reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+#reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+
+#def re_ranker_function(content: list, query):
+    #pairs = [[query, i] for i in content]
+    #scores = reranker.predict(pairs)
+  #  ranked_scores = list(zip(content, scores))
+   # ranked_scores = sorted(ranked_scores, key=lambda x:x[1], reverse=True)
+
+    #return ranked_scores[:4]
+
+
+import os
+import cohere
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# API Key get karna
+COHERE_API_KEY = os.getenv("COHERE_API_KEY")
+
+# Cohere client initialize karna
+# Agar key nahi hogi toh error de dega, isliye check laga diya
+if not COHERE_API_KEY:
+    print("WARNING: COHERE_API_KEY not found in environment variables!")
+    
+co = cohere.Client(COHERE_API_KEY)
 
 def re_ranker_function(content: list, query):
-    pairs = [[query, i] for i in content]
-    scores = reranker.predict(pairs)
-    ranked_scores = list(zip(content, scores))
-    ranked_scores = sorted(ranked_scores, key=lambda x:x[1], reverse=True)
+    # Agar content list empty hai toh khali list wapas bhej do
+    if not content:
+        return []
 
-    return ranked_scores[:4]
+    # Cohere API call for reranking
+    response = co.rerank(
+        model="rerank-english-v3.0",
+        query=query,
+        documents=content,
+        top_n=4 # Hum top 4 results hi mangwa rahe hain
+    )
+
+    ranked_scores = []
+    
+    # API ke response se data nikal kar aapke purane format (text, score) mein pack karna
+    for result in response.results:
+        doc_text = content[result.index]
+        score = result.relevance_score
+        ranked_scores.append((doc_text, score))
+
+    return ranked_scores
 
 
 if __name__ == "__main__":
