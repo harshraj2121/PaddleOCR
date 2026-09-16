@@ -24,7 +24,7 @@ if not COHERE_API_KEY:
     
 co = cohere.Client(COHERE_API_KEY)
 
-def re_ranker_function(content: list, query):
+def re_ranker_function(content, query):
     
     if not content:
         return []

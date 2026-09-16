@@ -19,7 +19,10 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],          # Sabhi origins allow
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],         # Sabhi origins allow
     allow_credentials=False,      # '*' ke saath True nahi ho sakta
     allow_methods=["*"],          # GET, POST, PUT, DELETE...
     allow_headers=["*"],          # Sabhi headers allow
