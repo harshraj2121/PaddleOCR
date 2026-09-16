@@ -22,6 +22,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://paddle-ocr.vercel.app",
     ],         # Sabhi origins allow
     allow_credentials=False,      # '*' ke saath True nahi ho sakta
     allow_methods=["*"],          # GET, POST, PUT, DELETE...
